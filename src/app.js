@@ -15,10 +15,12 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/auth", authRouter);
 
-app.get("/", passport.authenticate("facebook-token"), (req, res, next) => {
-  console.log("Hello World!");
-  console.log(`User: ${req?.user}`);
-  res.json("Hi");
-});
+app.get(
+  "/",
+  passport.authenticate("facebook-token", { session: false }),
+  (req, res, next) => {
+    res.json(req?.user);
+  }
+);
 
 app.listen(3000, () => console.log("running"));

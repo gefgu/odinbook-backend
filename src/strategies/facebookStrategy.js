@@ -7,9 +7,6 @@ const facebookStrategy = new FacebookTokenStrategy(
     fbGraphVersion: "v3.0",
   },
   function (accessToken, refreshToken, profile, done) {
-    console.log(`Access Token: ${accessToken}`);
-    console.log(`Refresh Token: ${refreshToken}`);
-    console.log(profile);
     return done(null, { name: "User" });
   }
 );
