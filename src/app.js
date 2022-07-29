@@ -10,6 +10,7 @@ passport.use(facebookStrategy);
 
 app.use(passport.initialize());
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/auth", authRouter);
