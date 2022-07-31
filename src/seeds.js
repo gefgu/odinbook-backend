@@ -42,7 +42,7 @@ function createRandomUser(callback) {
       callback(err);
       return;
     }
-    console.log(`New User: ${user}`);
+    console.log(`\nNew User: ${user}`);
     users.push(user);
     callback(null, user);
   });
@@ -58,7 +58,7 @@ function createRandomPost(i, callback) {
       callback(err);
       return;
     }
-    console.log(`New post: ${post}`);
+    console.log(`\nNew post: ${post}`);
     posts.push(post);
     callback(null, post);
   });
@@ -75,26 +75,30 @@ function createRandomComment(i, callback) {
       callback(err);
       return;
     }
-    console.log(`New comment: ${comment}`);
+    console.log(`\nNew comment: ${comment}`);
     comments.push(comment);
     callback(null, comment);
   });
 }
 
-// function createFriendsAndRequests(user, index, callback) {
-//   let newUser = user;
-//   let possibleFriends = users.splice(index, 1);
-//   newUser.friends = possibleFriends.slice(0, index);
-//   newUser.friendshipRequests = possibleFriends.slice(index);
-//   User.findByIdAndUpdate(user._id, newUser, {}, function (err) {
-//     if (err) {
-//       callback(err);
-//       return;
-//     }
+function createFriendsAndRequests(user, index, callback) {
+  let newUser = new User({
+    _id: user._id,
+    name: user.name,
+    photoURL: user.photoURL,
+    friends: users.slice(0, index),
+    friendshipRequests: users.slice(index + 1),
+  });
 
-//     console.log(`Added friends and friendship requests for user ${newUser}`);
-//   });
-// }
+  User.findByIdAndUpdate(user._id, newUser, {}, function (err) {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    console.log(`\nAdded friends and friendship requests for user ${newUser}`);
+  });
+}
 
 async.series(
   [
@@ -116,14 +120,14 @@ async.series(
         (index, cb) => createRandomComment(index, cb),
         callback
       ),
-    // (callback) =>
-    //   async.forEachOf(
-    //     users,
-    //     (user, index, cb) => {
-    //       createFriendsAndRequests(user, index, cb);
-    //     },
-    //     callback
-    //   ),
+    (callback) =>
+      async.forEachOf(
+        [...users],
+        (user, index, cb) => {
+          createFriendsAndRequests(user, index, cb);
+        },
+        callback
+      ),
   ],
   function (err, results) {
     if (err) console.log(`Final Error: ${err}`);
