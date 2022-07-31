@@ -94,6 +94,21 @@ function populateDatabase() {
       comments.push(comment);
     });
   }
+
+  users.forEach((user, index) => {
+    let newUser = user;
+    let possibleFriends = users.splice(index, 1);
+    newUser.friends = possibleFriends.slice(0, index);
+    newUser.friendshipRequests = possibleFriends.slice(index);
+    User.findByIdAndUpdate(user._id, newUser, {}, function (err) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+
+      console.log(`Added friends and friendship requests for user ${newUser}`);
+    });
+  });
 }
 
 populateDatabase();
