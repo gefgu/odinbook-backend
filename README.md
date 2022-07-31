@@ -17,6 +17,9 @@
   - Author -> User
   - Array with the \_id of users who liked the post
 - Comments
+  - Content Message
+  - Creation Date
+  - Author -> User
   - Links to Posts
 - Friend Requests
   - Fields
