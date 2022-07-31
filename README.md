@@ -12,8 +12,10 @@
 - User
   - Has an array with the \_id of friends
 - Posts
-  - Links to User
-  - Has an array with the \_id of users who liked the post
+  - Content Message
+  - Creation Date
+  - Author -> User
+  - Array with the \_id of users who liked the post
 - Comments
   - Links to Posts
 - Friend Requests
