@@ -4,17 +4,22 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "watch": "nodemon sr/app.js",
+    "populate": "node src/seeds.js",
+    "watch": "nodemon src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "async": "^3.2.4",
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "mongoose": "^6.5.0",
     "passport": "^0.6.0",
     "passport-facebook-token": "^4.0.0"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.3.0"
   }
 }
