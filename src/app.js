@@ -2,7 +2,9 @@ require("dotenv").config();
 const express = require("express");
 const passport = require("passport");
 const authRouter = require("./routes/authRouter");
+const userRouter = require("./routes/userRouter");
 const facebookStrategy = require("./strategies/facebookStrategy");
+const models = require("./models");
 
 const app = express();
 
@@ -12,8 +14,13 @@ app.use(passport.initialize());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use((req, res, next) => {
+  req.context = { models };
+  next();
+});
 
 app.use("/auth", authRouter);
+app.use("/users", userRouter);
 
 app.get(
   "/",
