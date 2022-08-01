@@ -28,4 +28,4 @@
   - `/users`
     - **GET**: Return list of all users
   - `/users/:userId`
-    - **GET**: Return user's data
+    - **GET**: Return user's data with friends and friend requests data
