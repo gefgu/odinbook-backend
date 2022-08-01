@@ -1,6 +1,9 @@
 const express = require("express");
+const passport = require("passport");
 
 const userRouter = express.Router();
+
+userRouter.use(passport.authenticate("facebook-token", { session: false }));
 
 userRouter.get("/", (req, res, next) => {
   req.context.models.User.find({}).exec((err, userList) => {
