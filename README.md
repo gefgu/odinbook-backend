@@ -5,7 +5,6 @@
 ### Authentication
 
 - PassportJS with Facebook Login
-- JSON Web Tokens
 
 ### MongoDB Schemas
 
@@ -22,3 +21,11 @@
   - Creation Date
   - Author -> User
   - Links to Posts
+
+### RESTful Endpoints
+
+- Users
+  - `/users`
+    - **GET**: Return list of all users
+  - `/users/:userId`
+    - **GET**: Return user's data
