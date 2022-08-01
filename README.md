@@ -33,5 +33,6 @@
     - **POST**: Add user (in body - userId) as friend of user#userId and vice-versa
     - **DELETE**: Delete user (in body - userId) as friend of user#userId and vice-versa
   - `/users/:userId/friendshipRequests`
+    - **GET**: Get all friendship Requests made by :userId
     - **POST**: Add user (in body - userId) as friendshipRequest of user#userId
     - **DELETE**: Delete user (in body - userId) as friendshipRequest of user#userId

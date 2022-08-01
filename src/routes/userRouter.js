@@ -106,6 +106,18 @@ userRouter.delete("/:userId/friends", async (req, res, next) => {
   res.status(200).json({ msg: "Successful", userFromBody, userFromParams });
 });
 
+userRouter.get("/:userId/friendshipRequests", async (req, res, next) => {
+  const user = await req.context.models.User.findById(req.params.userId).exec();
+
+  req.context.models.User.find({ friendshipRequests: user }).exec(
+    (err, userList) => {
+      if (err) return next(err);
+
+      res.json(userList);
+    }
+  );
+});
+
 userRouter.post("/:userId/friendshipRequests", async (req, res, next) => {
   const userFromBody = await req.context.models.User.findById(
     req.body.userId
