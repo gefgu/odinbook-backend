@@ -1,5 +1,6 @@
 const express = require("express");
 const passport = require("passport");
+const { removeObjectDuplicatesOfArray } = require("../helpers");
 
 const userRouter = express.Router();
 
@@ -34,6 +35,40 @@ userRouter.get("/:userId", (req, res, next) => {
 
       res.json(user);
     });
+});
+
+userRouter.post("/:userId/friends", async (req, res, next) => {
+  const userFromBody = await req.context.models.User.findById(
+    req.body.userId
+  ).exec();
+
+  if (userFromBody === null) {
+    const err = new Error("User from body request not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  const userFromParams = await req.context.models.User.findById(
+    req.params.userId
+  ).exec();
+
+  if (userFromParams === null) {
+    const err = new Error("User from URL params found");
+    err.status = 404;
+    return next(err);
+  }
+
+  userFromBody.friends = removeObjectDuplicatesOfArray(
+    userFromBody.friends.concat(userFromParams)
+  );
+  userFromParams.friends = removeObjectDuplicatesOfArray(
+    userFromParams.friends.concat(userFromBody)
+  );
+
+  await userFromBody.save();
+  await userFromParams.save();
+
+  res.status(200).json({ msg: "Successful", userFromBody, userFromParams });
 });
 
 module.exports = userRouter;
