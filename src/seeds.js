@@ -82,12 +82,26 @@ function createRandomComment(i, callback) {
 }
 
 function createFriendsAndRequests(user, index, callback) {
+  let friends = [];
+
+  if (index < 3) {
+    friends = users.slice(0, 3);
+    friends = friends.slice(0, index).concat(friends.slice(index + 1));
+    friendshipRequests = users.slice(3);
+    friendshipRequests = friendshipRequests.slice(0, index).concat(friendshipRequests.slice(index + 1));
+  } else {
+    friends = users.slice(3);
+    friends = friends.slice(0, index).concat(friends.slice(index + 1));
+    friendshipRequests = users.slice(0, 3);
+    friendshipRequests = friendshipRequests.slice(0, index).concat(friendshipRequests.slice(index + 1));
+  }
+
   let newUser = new User({
     _id: user._id,
     name: user.name,
     photoURL: user.photoURL,
-    friends: users.slice(0, index),
-    friendshipRequests: users.slice(index + 1),
+    friends: friends,
+    friendshipRequests: friendshipRequests,
   });
 
   User.findByIdAndUpdate(user._id, newUser, {}, function (err) {
