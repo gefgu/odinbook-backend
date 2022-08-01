@@ -29,3 +29,6 @@
     - **GET**: Return list of all users
   - `/users/:userId`
     - **GET**: Return user's data with friends and friend requests data
+  - `/users/:userId/friends`
+    - **POST**: Add user (in body - userId) as friend of user#userId
+    - **DELETE**: Delete user (in body - userId) as friend of user#userId
