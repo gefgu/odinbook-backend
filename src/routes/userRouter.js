@@ -106,4 +106,73 @@ userRouter.delete("/:userId/friends", async (req, res, next) => {
   res.status(200).json({ msg: "Successful", userFromBody, userFromParams });
 });
 
+userRouter.post("/:userId/friendshipRequests", async (req, res, next) => {
+  const userFromBody = await req.context.models.User.findById(
+    req.body.userId
+  ).exec();
+
+  if (userFromBody === null) {
+    const err = new Error("User from body request not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  const userFromParams = await req.context.models.User.findById(
+    req.params.userId
+  ).exec();
+
+  if (userFromParams === null) {
+    const err = new Error("User from URL params found");
+    err.status = 404;
+    return next(err);
+  }
+
+  userFromBody.friendshipRequests = removeObjectDuplicatesOfArray(
+    userFromBody.friendshipRequests.concat(userFromParams)
+  );
+  userFromParams.friendshipRequests = removeObjectDuplicatesOfArray(
+    userFromParams.friendshipRequests.concat(userFromBody)
+  );
+
+  await userFromBody.save();
+  await userFromParams.save();
+
+  res.status(200).json({ msg: "Successful", userFromBody, userFromParams });
+});
+
+userRouter.delete("/:userId/friendshipRequests", async (req, res, next) => {
+  const userFromBody = await req.context.models.User.findById(
+    req.body.userId
+  ).exec();
+
+  if (userFromBody === null) {
+    const err = new Error("User from body request not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  const userFromParams = await req.context.models.User.findById(
+    req.params.userId
+  ).exec();
+
+  if (userFromParams === null) {
+    const err = new Error("User from URL params found");
+    err.status = 404;
+    return next(err);
+  }
+
+  userFromBody.friendshipRequests = userFromBody.friendshipRequests.filter(
+    (friend) => friend._id.toString() !== userFromParams._id.toString()
+  );
+
+  userFromParams.friendshipRequests = userFromParams.friendshipRequests.filter(
+    (friend) => friend._id.toString() !== userFromBody._id.toString()
+  );
+
+  await userFromBody.save();
+  await userFromParams.save();
+
+  res.status(200).json({ msg: "Successful", userFromBody, userFromParams });
+});
+
 module.exports = userRouter;
