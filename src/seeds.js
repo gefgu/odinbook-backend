@@ -87,13 +87,15 @@ function createFriendsAndRequests(user, index, callback) {
   if (index < 3) {
     friends = users.slice(0, 3);
     friends = friends.slice(0, index).concat(friends.slice(index + 1));
-    friendshipRequests = users.slice(3);
-    friendshipRequests = friendshipRequests.slice(0, index).concat(friendshipRequests.slice(index + 1));
+    friendshipRequests = users.slice(0, index).concat(users.slice(index + 1));
+    friendshipRequests = friendshipRequests.slice(3);
   } else {
-    friends = users.slice(3);
-    friends = friends.slice(0, index).concat(friends.slice(index + 1));
+    friends = users.slice(0, index).concat(users.slice(index + 1));
+    friends = friends.slice(3);
     friendshipRequests = users.slice(0, 3);
-    friendshipRequests = friendshipRequests.slice(0, index).concat(friendshipRequests.slice(index + 1));
+    friendshipRequests = friendshipRequests
+      .slice(0, index)
+      .concat(friendshipRequests.slice(index + 1));
   }
 
   let newUser = new User({
