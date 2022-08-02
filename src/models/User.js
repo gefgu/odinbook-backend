@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const findOrCreate = require("mongoose-find-or-create");
 
 const Schema = mongoose.Schema;
 
@@ -11,6 +12,9 @@ const UserSchema = new Schema({
     ref: "User",
     required: false,
   },
+  facebookId: { type: String, required: false, default: null },
 });
+
+UserSchema.plugin(findOrCreate);
 
 module.exports = mongoose.model("User", UserSchema);

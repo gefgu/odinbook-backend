@@ -20,6 +20,7 @@ app.use(passport.initialize());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 app.use((req, res, next) => {
   req.context = { models };
   next();
@@ -35,5 +36,9 @@ app.get(
     res.json(req?.user);
   }
 );
+
+app.use((err, req, res, next) => {
+  res.json({ error: err });
+});
 
 app.listen(3000, () => console.log("running"));

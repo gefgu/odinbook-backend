@@ -1,4 +1,5 @@
 const FacebookTokenStrategy = require("passport-facebook-token");
+const { User } = require("../models");
 
 const facebookStrategy = new FacebookTokenStrategy(
   {
@@ -7,8 +8,16 @@ const facebookStrategy = new FacebookTokenStrategy(
     fbGraphVersion: "v3.0",
   },
   function (accessToken, refreshToken, profile, done) {
-    console.log(profile);
-    return done(null, { name: "User" });
+    User.findOrCreate(
+      {
+        name: profile._json.name,
+        photoURL: profile.photos[0].value,
+        facebookId: profile.id.toString(),
+      },
+      (err, result) => {
+        return done(err, result);
+      }
+    );
   }
 );
 
