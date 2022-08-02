@@ -47,11 +47,11 @@
     - **PUT**: Edit post if authenticated user is author.
     - **DELETE**: Delete post if authenticated user is author.
   - `/posts/:postId/comment`
-    - **GET**: Return post#postId data.
-    - **POST**: Create new post with authenticated user as author.
+    - **GET**: Return post#postId comments.
+    - **POST**: Create new comment with authenticated user as author.
   - `/posts/:postId/comment/:commentId`
     - **PUT**: Update comment if authenticated user is author.
-    - **DELETE**: Delete post if authenticated user is author.
+    - **DELETE**: Delete comment if authenticated user is author.
 
 
 [ ] Add Like Endpoints
