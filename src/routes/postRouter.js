@@ -61,6 +61,22 @@ postRouter.put("/:postId", [
       return;
     }
 
+    req.context.models.Post.findById(req.params.postId).exec((err, post) => {
+      if (err) return next(err);
+
+      if (post === null) {
+        const err = new Error("Post not found!");
+        err.status = 404;
+        return next(err);
+      }
+
+      if (post.author.toString() === req.user._id.toString()) {
+        const err = new Error("Unauthorized");
+        err.status = 401;
+        return next(err);
+      }
+    });
+
     const post = new req.context.models.Post({
       content: req.body.content,
       author: req.user._id,
