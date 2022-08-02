@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const authRouter = require("./routes/authRouter");
 const userRouter = require("./routes/userRouter");
+const postRouter = require("./routes/postRouter");
 const facebookStrategy = require("./strategies/facebookStrategy");
 const models = require("./models");
 
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
+app.use("/posts", postRouter);
 
 app.get(
   "/",
