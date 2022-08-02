@@ -9,7 +9,7 @@ postRouter.use(passport.authenticate("facebook-token", { session: false }));
 postRouter.get("/", (req, res, next) => {
   const friends = req.user.friends;
 
-  req.context.models.Post.find({ author: friends }).exec((err, postList) => {
+  req.context.models.Post.find({ author: friends.concat(req.user._id) }).exec((err, postList) => {
     if (err) return next(err);
 
     res.json(postList);

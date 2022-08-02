@@ -40,7 +40,7 @@
     - **GET**: Return all posts from specific user.
 - Posts
   - `/posts`
-    - **GET**: Return all posts for authenticated user. (from friends)
+    - **GET**: Return all posts for authenticated user. (from friends and authenticated user posts)
     - **POST**: Create new post with authenticated user as author.
   - `/posts/:postId`
     - **GET**: Return post#postId data.
