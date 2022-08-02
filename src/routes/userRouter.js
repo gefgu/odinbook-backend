@@ -187,4 +187,29 @@ userRouter.delete("/:userId/friendshipRequests", async (req, res, next) => {
   res.status(200).json({ msg: "Successful", userFromBody, userFromParams });
 });
 
+userRouter.get("/:userId/posts", async (req, res, next) => {
+  let user;
+  try {
+    user = await req.context.models.User.findById(
+      req.params.userId
+    ).exec();
+  } catch (error) {
+    const err = new Error("User not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  req.context.models.Post.find({ author: user }).exec((err, postList) => {
+    if (err) return next(err);
+
+    if (postList === null) {
+      const err = new Error("Posts not found");
+      err.status = 404;
+      return next(err);
+    }
+
+    res.json(postList);
+  });
+});
+
 module.exports = userRouter;
