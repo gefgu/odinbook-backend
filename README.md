@@ -52,3 +52,6 @@
   - `/posts/:postId/comment/:commentId`
     - **PUT**: Update comment if authenticated user is author.
     - **DELETE**: Delete post if authenticated user is author.
+
+
+[ ] Add Like Endpoints
