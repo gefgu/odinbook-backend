@@ -38,4 +38,16 @@ postRouter.post("/", [
   },
 ]);
 
+postRouter.get("/:postId", (req, res, next) => {
+  req.context.models.Post.findById(req.params.postId).exec((err, post) => {
+    if (err) return next(err);
+    if (post === null) {
+      const err = new Error("Post not found!");
+      err.status = 404;
+      return next(err);
+    }
+    res.json(post);
+  });
+});
+
 module.exports = postRouter;
