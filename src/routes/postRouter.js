@@ -2,6 +2,26 @@ const express = require("express");
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
 
+function handleUserIsAuthor(req, res, next) {
+  req.context.models.Post.findById(req.params.postId).exec((err, post) => {
+    if (err) return next(err);
+
+    if (post === null) {
+      const err = new Error("Post not found!");
+      err.status = 404;
+      return next(err);
+    }
+
+    if (post.author.toString() !== req.user._id.toString()) {
+      const err = new Error("Unauthorized");
+      err.status = 401;
+      return next(err);
+    }
+
+    next();
+  });
+}
+
 const postRouter = express.Router();
 
 postRouter.use(passport.authenticate("facebook-token", { session: false }));
@@ -54,28 +74,13 @@ postRouter.get("/:postId", (req, res, next) => {
 
 postRouter.put("/:postId", [
   body("content", "Post Content must be specified").trim().isLength({ min: 1 }),
+  handleUserIsAuthor,
   (req, res, next) => {
     const errors = validationResult(req);
     if (errors.array().length > 0) {
       res.json(errors);
       return;
     }
-
-    req.context.models.Post.findById(req.params.postId).exec((err, post) => {
-      if (err) return next(err);
-
-      if (post === null) {
-        const err = new Error("Post not found!");
-        err.status = 404;
-        return next(err);
-      }
-
-      if (post.author.toString() === req.user._id.toString()) {
-        const err = new Error("Unauthorized");
-        err.status = 401;
-        return next(err);
-      }
-    });
 
     const post = new req.context.models.Post({
       content: req.body.content,
