@@ -107,4 +107,12 @@ postRouter.put("/:postId", [
   },
 ]);
 
+postRouter.delete("/:postId", handleUserIsAuthor, (req, res, next) => {
+  req.context.models.Post.findByIdAndRemove(req.params.postId, function (err) {
+    if (err) return next(err);
+
+    res.json({ message: "POST DELETED WITH SUCCESS!" });
+  });
+});
+
 module.exports = postRouter;
