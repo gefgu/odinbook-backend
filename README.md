@@ -46,6 +46,8 @@
     - **GET**: Return post#postId data.
     - **PUT**: Edit post if authenticated user is author.
     - **DELETE**: Delete post if authenticated user is author.
+  - `/posts/:postId/like`
+    - **PUT**: Toggle status of like for user. If user is in list of likes, then it removes the user from it. If the user isn't in the list of likes, then it is added.
   - `/posts/:postId/comment`
     - **GET**: Return post#postId comments.
     - **POST**: Create new comment with authenticated user as author.
@@ -53,5 +55,3 @@
     - **PUT**: Update comment if authenticated user is author.
     - **DELETE**: Delete comment if authenticated user is author.
 
-
-[ ] Add Like Endpoints
