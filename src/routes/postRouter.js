@@ -204,4 +204,19 @@ postRouter.put("/:postId/comments/:commentId", [
   },
 ]);
 
+postRouter.delete(
+  "/:postId/comments/:commentId",
+  handleUserIsAuthorOfComment,
+  (req, res, next) => {
+    req.context.models.Comment.findByIdAndRemove(
+      req.params.commentId,
+      function (err) {
+        if (err) return next(err);
+
+        res.json({ message: "COMMENT DELETED WITH SUCCESS!" });
+      }
+    );
+  }
+);
+
 module.exports = postRouter;
