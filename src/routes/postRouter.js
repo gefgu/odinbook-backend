@@ -115,4 +115,14 @@ postRouter.delete("/:postId", handleUserIsAuthor, (req, res, next) => {
   });
 });
 
+postRouter.get("/:postId/comments", (req, res, next) => {
+  req.context.models.Comment.find({ post: req.params.postId }).exec(
+    (err, commentList) => {
+      if (err) return next(err);
+
+      res.json(commentList);
+    }
+  );
+});
+
 module.exports = postRouter;
