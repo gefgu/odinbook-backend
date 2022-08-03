@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
 
-function handleUserIsAuthor(req, res, next) {
+function handleUserIsAuthorOfPost(req, res, next) {
   req.context.models.Post.findById(req.params.postId).exec((err, post) => {
     if (err) return next(err);
 
@@ -20,6 +20,28 @@ function handleUserIsAuthor(req, res, next) {
 
     next();
   });
+}
+
+function handleUserIsAuthorOfComment(req, res, next) {
+  req.context.models.Comment.findById(req.params.commentId).exec(
+    (err, comment) => {
+      if (err) return next(err);
+
+      if (comment === null) {
+        const err = new Error("Comment not found!");
+        err.status = 404;
+        return next(err);
+      }
+
+      if (comment.author.toString() !== req.user._id.toString()) {
+        const err = new Error("Unauthorized");
+        err.status = 401;
+        return next(err);
+      }
+
+      next();
+    }
+  );
 }
 
 const postRouter = express.Router();
@@ -74,7 +96,7 @@ postRouter.get("/:postId", (req, res, next) => {
 
 postRouter.put("/:postId", [
   body("content", "Post Content must be specified").trim().isLength({ min: 1 }),
-  handleUserIsAuthor,
+  handleUserIsAuthorOfPost,
   (req, res, next) => {
     const errors = validationResult(req);
     if (errors.array().length > 0) {
@@ -107,7 +129,7 @@ postRouter.put("/:postId", [
   },
 ]);
 
-postRouter.delete("/:postId", handleUserIsAuthor, (req, res, next) => {
+postRouter.delete("/:postId", handleUserIsAuthorOfPost, (req, res, next) => {
   req.context.models.Post.findByIdAndRemove(req.params.postId, function (err) {
     if (err) return next(err);
 
@@ -147,6 +169,38 @@ postRouter.post("/:postId/comments", [
 
       res.json({ message: "Comment CREATED WITH SUCESS!", comment });
     });
+  },
+]);
+
+postRouter.put("/:postId/comments/:commentId", [
+  body("content", "Comment Content must be specified")
+    .trim()
+    .isLength({ min: 1 }),
+  handleUserIsAuthorOfComment,
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.array().length > 0) {
+      res.json(errors);
+      return;
+    }
+
+    const comment = new req.context.models.Post({
+      content: req.body.content,
+      author: req.user._id,
+      post: req.params.postId,
+      _id: req.params.commentId,
+    });
+
+    req.context.models.Comment.findByIdAndUpdate(
+      req.params.commentId,
+      comment,
+      {},
+      function (err) {
+        if (err) return next(err);
+
+        res.json({ message: "COMMENT UPDATED WITH SUCCESS!", comment });
+      }
+    );
   },
 ]);
 
