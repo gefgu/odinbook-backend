@@ -1,6 +1,7 @@
 const express = require("express");
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
+const { removeObjectDuplicatesOfArray } = require("../helpers");
 
 function handleUserIsAuthorOfPost(req, res, next) {
   req.context.models.Post.findById(req.params.postId).exec((err, post) => {
@@ -218,5 +219,46 @@ postRouter.delete(
     );
   }
 );
+
+postRouter.put("/:postId/like", (req, res, next) => {
+  req.context.models.Post.findById(req.params.postId).exec((err, post) => {
+    if (err) return next(err);
+    if (post === null) {
+      const err = new Error("Post not found!");
+      err.status = 404;
+      return next(err);
+    }
+
+    let likes = post.likes;
+
+    const index = likes.indexOf(req.user._id.toString());
+    if (index > -1) {
+      likes.splice(index, 1);
+    } else {
+      likes = post.likes.concat(req.user._id);
+    }
+
+    likes = removeObjectDuplicatesOfArray(likes);
+
+    const postWithLike = new req.context.models.Post({
+      content: post.content,
+      author: post.author,
+      _id: post._id,
+      creationDate: post.creationDate,
+      likes: likes,
+    });
+
+    req.context.models.Post.findByIdAndUpdate(
+      req.params.postId,
+      postWithLike,
+      {},
+      function (err) {
+        if (err) return next(err);
+
+        res.json({ message: "POST UPDATED WITH SUCCESS!", postWithLike });
+      }
+    );
+  });
+});
 
 module.exports = postRouter;
