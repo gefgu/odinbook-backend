@@ -125,4 +125,29 @@ postRouter.get("/:postId/comments", (req, res, next) => {
   );
 });
 
+postRouter.post("/:postId/comments", [
+  body("content", "Comment Content must be specified")
+    .trim()
+    .isLength({ min: 1 }),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.array().length > 0) {
+      res.json(errors);
+      return;
+    }
+
+    const comment = new req.context.models.Comment({
+      content: req.body.content,
+      author: req.user._id,
+      post: req.params.postId,
+    });
+
+    comment.save(function (err) {
+      if (err) return next(err);
+
+      res.json({ message: "Comment CREATED WITH SUCESS!", comment });
+    });
+  },
+]);
+
 module.exports = postRouter;
